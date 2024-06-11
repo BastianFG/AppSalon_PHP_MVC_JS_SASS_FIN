@@ -23,6 +23,9 @@ function iniciarApp() {
 
     consultarAPI(); // Consulta la API en el backend de PHP
 
+    consultarProfesionales();
+    mostrarProfesionales();
+
     idCliente();
     nombreCliente(); // Añade el nombre del cliente al objeto de cita
     seleccionarFecha(); // Añade la fecha de la cita en el objeto
@@ -113,18 +116,55 @@ function paginaSiguiente() {
 }
 
 async function consultarAPI() {
-
     try {
-        const url = 'http://localhost:3000/api/servicios';
+        const url = "http://localhost:3000/api/servicios";
         const resultado = await fetch(url);
         const servicios = await resultado.json();
         mostrarServicios(servicios);
-    
     } catch (error) {
         console.log(error);
     }
 }
 
+async function consultarProfesionales() {
+    try {
+        const url = "http://localhost:3000/api/profesionales";
+        const resultado = await fetch(url);
+        const profesionales = await resultado.json();
+        mostrarProfesionales(profesionales);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+function mostrarProfesionales(profesionales) {
+    profesionales.forEach(profesional => {
+        const { id, nombre, apellido, especialidad } = profesional;
+
+        const nombreProfesional = document.createElement('P');
+        nombreProfesional.classList.add('nombre-profesional');
+        nombreProfesional.textContent = nombre;
+
+        const apellidoProfesional = document.createElement('P');
+        apellidoProfesional.classList.add('apellido-profesional');
+        apellidoProfesional.textContent = apellido;
+
+        const especialidadProfesional = document.createElement('P');
+        especialidadProfesional.classList.add('especialidad-profesional');
+        especialidadProfesional.textContent = especialidad;
+
+        const profesionalDiv = document.createElement('DIV');
+        profesionalDiv.classList.add('profesional');
+        profesionalDiv.dataset.idProfesional = id;
+
+        profesionalDiv.appendChild(nombreProfesional);
+        profesionalDiv.appendChild(apellidoProfesional);
+        profesionalDiv.appendChild(especialidadProfesional);
+
+
+        document.querySelector("#profesionales");
+        });
+}
 function mostrarServicios(servicios) {
     servicios.forEach( servicio => {
         const { id, nombre, precio } = servicio;

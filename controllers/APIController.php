@@ -11,10 +11,13 @@ class APIController {
     public static function index() {
         $servicios = Servicio::all();
         echo json_encode($servicios);
-        $profesionales = Profesional::all();
-
     }
 
+    public static function verprofesionales() {
+        $profesionales = Profesional::all();
+        echo json_encode($profesionales);
+    }
+    
     public static function guardar() {
         
         // Almacena la Cita y devuelve el ID
