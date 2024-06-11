@@ -5,11 +5,14 @@ namespace Controllers;
 use Model\Cita;
 use Model\CitaServicio;
 use Model\Servicio;
+use Model\Profesional;
 
 class APIController {
     public static function index() {
         $servicios = Servicio::all();
         echo json_encode($servicios);
+        $profesionales = Profesional::all();
+
     }
 
     public static function guardar() {

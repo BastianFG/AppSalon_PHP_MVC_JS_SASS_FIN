@@ -1,10 +1,9 @@
 @use 'base/variables' as v;
 @use 'base/mixins' as m;
-
 .contenedor-app {
     @include m.tablet {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr 2fr; // Ajusta las proporciones de las columnas
         min-height: 100vh;
     }
 
@@ -23,10 +22,11 @@
         margin: 0 auto;
         padding: 3rem 0;
         @include m.tablet {
-            overflow: scroll;
+            overflow:auto;
         }
     }
 }
+
 
 .barra {
     margin: v.$separacion 0;

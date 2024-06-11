@@ -7,6 +7,8 @@ use Controllers\APIController;
 use Controllers\CitaController;
 use Controllers\LoginController;
 use Controllers\ServicioController;
+use Controllers\ProfesionalController;
+
 use MVC\Router;
 $router = new Router();
 
@@ -37,6 +39,7 @@ $router->get('/admin', [AdminController::class, 'index']);
 $router->get('/api/servicios', [APIController::class, 'index']);
 $router->post('/api/citas', [APIController::class, 'guardar']);
 $router->post('/api/eliminar', [APIController::class, 'eliminar']);
+$router->post('/api/Profesional', [APIController::class, 'index']);
 
 // CRUD de Servicios
 $router->get('/servicios', [ServicioController::class, 'index']);
@@ -47,9 +50,12 @@ $router->post('/servicios/actualizar', [ServicioController::class, 'actualizar']
 $router->post('/servicios/eliminar', [ServicioController::class, 'eliminar']);
 
 // Profesionales
-$router->get('/admin/profesionales', [ProfesionalController::class, 'index']);
-$router->get('/admin/profesionales/crear', [ProfesionalController::class, 'crear']);
-$router->post('/admin/profesionales/crear', [ProfesionalController::class, 'crear']);
+$router->get('/profesionales', [ProfesionalController::class, 'index']);
+$router->get('/profesionales/crear', [ProfesionalController::class, 'crear']);
+$router->get('/profesionales/actualizar', [ProfesionalController::class, 'actualizar']);
+$router->post('/profesionales/crear', [ProfesionalController::class, 'crear']);
+$router->post('/profesionales/actualizar', [ProfesionalController::class, 'actualizar']);
+$router->post('/profesionales/eliminar', [ProfesionalController::class, 'eliminar']);
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador
 $router->comprobarRutas();

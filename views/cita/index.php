@@ -7,6 +7,9 @@
 
 <div id="app">
     <nav class="tabs">
+        <button type="button" data-paso="4">Nustros Profesionales</button>
+    </nav>
+    <nav class="tabs">
         <button class="actual" type="button" data-paso="1">Servicios</button>
         <button type="button" data-paso="2">Información Cita</button>
         <button type="button" data-paso="3">Resumen</button>
@@ -59,6 +62,11 @@
     <div id="paso-3" class="seccion contenido-resumen">
         <h2>Resumen</h2>
         <p class="text-center">Verifica que la información sea correcta</p>
+    </div>
+
+    <div id="paso-4" class="seccion contenido-resumen">
+        <h2>Nuestro Profesionales</h2>
+        <div id="profesionales" class="listado-servicios"></div>
     </div>
 
     <div class="paginacion">

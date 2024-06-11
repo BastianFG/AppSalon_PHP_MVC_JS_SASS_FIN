@@ -1,9 +1,7 @@
 <?php
-namespace Models;
+namespace Model;
 
-use MVC\Modelo;
-
-class Profesional extends Modelo {
+class Profesional extends ActiveRecord {
     protected static $tabla = 'profesionales';
     protected static $columnasDB = ['id', 'nombre', 'apellido', 'especialidad'];
 
