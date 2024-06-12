@@ -13,7 +13,7 @@ class APIController {
         echo json_encode($servicios);
     }
 
-    public static function verprofesionales() {
+    public static function profesionales() {
         $profesionales = Profesional::all();
         echo json_encode($profesionales);
     }

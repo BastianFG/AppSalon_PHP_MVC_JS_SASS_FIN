@@ -100,4 +100,17 @@ function validarFecha() {
         fechaInput.value = "";  // Clear the invalid date
     }
 }
+function tabs() {
+    document.querySelectorAll(".tabs button").forEach(boton => {
+        boton.addEventListener("click", function(e) {
+            e.preventDefault();
+            paso = parseInt(e.target.dataset.paso);
+            mostrarSeccion();
+            botonesPaginador();
+            if (paso === 4) {
+                consultarProfesionales(); // Llamar a esta función cuando se selecciona el paso 4
+            }
+        });
+    });
+}
 </script>

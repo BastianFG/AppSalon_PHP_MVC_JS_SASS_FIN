@@ -1,5 +1,6 @@
 let paso = 1;
 const pasoInicial = 1;
+const pasoIntermedio = 4;
 const pasoFinal = 3;
 
 const cita = {
@@ -22,9 +23,7 @@ function iniciarApp() {
     paginaAnterior();
 
     consultarAPI(); // Consulta la API en el backend de PHP
-
     consultarProfesionales();
-    mostrarProfesionales();
 
     idCliente();
     nombreCliente(); // Añade el nombre del cliente al objeto de cita
@@ -86,11 +85,18 @@ function botonesPaginador() {
         paginaSiguiente.classList.add('ocultar');
 
         mostrarResumen();
+    } else if (paso === 4) {
+        
+        paginaAnterior.classList.remove('ocultar');
+        paginaSiguiente.classList.remove('ocultar');
+        mostrarProfesionales(profesionales);
+
     } else {
         paginaAnterior.classList.remove('ocultar');
         paginaSiguiente.classList.remove('ocultar');
-    }
-
+    
+    
+    
     mostrarSeccion();
 }
 
@@ -138,32 +144,28 @@ async function consultarProfesionales() {
 }
 
 function mostrarProfesionales(profesionales) {
+    const container = document.querySelector("#profesionales");
+
     profesionales.forEach(profesional => {
         const { id, nombre, apellido, especialidad } = profesional;
 
         const nombreProfesional = document.createElement('P');
         nombreProfesional.classList.add('nombre-profesional');
-        nombreProfesional.textContent = nombre;
-
-        const apellidoProfesional = document.createElement('P');
-        apellidoProfesional.classList.add('apellido-profesional');
-        apellidoProfesional.textContent = apellido;
+        nombreProfesional.textContent = `${nombre} ${apellido}`;
 
         const especialidadProfesional = document.createElement('P');
         especialidadProfesional.classList.add('especialidad-profesional');
-        especialidadProfesional.textContent = especialidad;
+        especialidadProfesional.textContent = `Especialidad: ${especialidad}`;
 
         const profesionalDiv = document.createElement('DIV');
         profesionalDiv.classList.add('profesional');
         profesionalDiv.dataset.idProfesional = id;
 
         profesionalDiv.appendChild(nombreProfesional);
-        profesionalDiv.appendChild(apellidoProfesional);
         profesionalDiv.appendChild(especialidadProfesional);
 
-
-        document.querySelector("#profesionales");
-        });
+        container.appendChild(profesionalDiv);
+    });
 }
 function mostrarServicios(servicios) {
     servicios.forEach( servicio => {

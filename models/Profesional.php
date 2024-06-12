@@ -16,20 +16,4 @@ class Profesional extends ActiveRecord {
         $this->apellido = $args['apellido'] ?? '';
         $this->especialidad = $args['especialidad'] ?? '';
     }
-
-    public function validar() {
-        $errores = [];
-
-        if (!$this->nombre) {
-            $errores[] = 'El nombre es obligatorio';
-        }
-        if (!$this->apellido) {
-            $errores[] = 'El apellido es obligatorio';
-        }
-        if (!$this->especialidad) {
-            $errores[] = 'La especialidad es obligatoria';
-        }
-
-        return $errores;
-    }
 }
