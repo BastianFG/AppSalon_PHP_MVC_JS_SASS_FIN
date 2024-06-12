@@ -5,7 +5,7 @@ namespace Model;
 class Usuario extends ActiveRecord {
     // Base de datos
     protected static $tabla = 'usuarios';
-    protected static $columnasDB = ['id', 'nombre', 'apellido', 'email', 'password', 'telefono', 'admin', 'confirmado', 'token'];
+    protected static $columnasDB = ['id', 'nombre', 'apellido', 'email', 'password', 'telefono', 'admin', 'confirmado', 'token', 'intentos_login', 'ultimo_intento'];
 
     public $id;
     public $nombre;
@@ -16,6 +16,8 @@ class Usuario extends ActiveRecord {
     public $admin;
     public $confirmado;
     public $token;
+    public $intentos_login;
+    public $ultimo_intento;
 
     public function __construct($args = []) {
         $this->id = $args['id'] ?? null;
@@ -27,31 +29,40 @@ class Usuario extends ActiveRecord {
         $this->admin = $args['admin'] ?? '0';
         $this->confirmado = $args['confirmado'] ?? '0';
         $this->token = $args['token'] ?? '';
+        $this->intentos_login = $args['intentos_login'] ?? 0; // Corregido
+        $this->ultimo_intento = $args['ultimo_intento'] ?? date('Y-m-d H:i:s');
     }
 
-    // Mensajes de validación para la creación de una cuenta
+    // Métodos de validación y manejo de errores
     public function validarNuevaCuenta() {
-        if(!$this->nombre) {
+        if (!$this->nombre) {
             self::$alertas['error'][] = 'El Nombre es Obligatorio';
         }
-        if(!$this->apellido) {
+        if (!$this->apellido) {
             self::$alertas['error'][] = 'El Apellido es Obligatorio';
         }
-        if(!$this->email) {
+        if (!$this->email) {
             self::$alertas['error'][] = 'El Email es Obligatorio';
         }
-        if(!$this->password) {
+        if (!$this->password) {
             self::$alertas['error'][] = 'El Password es Obligatorio';
         }
-        if(strlen($this->password) < 6) {
-            self::$alertas['error'][] = 'El password debe contener al menos 6 caracteres';
+        if (strlen($this->password) < 8) {
+            self::$alertas['error'][] = 'El password debe contener al menos 8 caracteres';
         }
-
-
-
+        if (!preg_match('/[A-Z]/', $this->password)) {
+            self::$alertas['error'][] = 'El password debe contener al menos una letra mayúscula';
+        }
+        if (!preg_match('/\d/', $this->password)) {
+            self::$alertas['error'][] = 'El password debe contener al menos un número';
+        }
+        if (!preg_match('/[\W_]/', $this->password)) {
+            self::$alertas['error'][] = 'El password debe contener al menos un carácter especial';
+        }
+    
         return self::$alertas;
     }
-
+    
     public function validarLogin() {
         if(!$this->email) {
             self::$alertas['error'][] = 'El email es Obligatorio';
@@ -62,6 +73,7 @@ class Usuario extends ActiveRecord {
 
         return self::$alertas;
     }
+    
     public function validarEmail() {
         if(!$this->email) {
             self::$alertas['error'][] = 'El email es Obligatorio';
@@ -111,4 +123,17 @@ class Usuario extends ActiveRecord {
         }
     }
 
+    // Método para incrementar intentos de inicio de sesión
+    public function incrementarIntentos() {
+        $this->intentos_login++;
+        $this->ultimo_intento = date('Y-m-d H:i:s');
+        $this->guardar();
+    }
+
+    // Método para resetear intentos de inicio de sesión
+    public function resetearIntentos() {
+        $this->intentos_login = 0;
+        $this->ultimo_intento = null;
+        $this->guardar();
+    }
 }
