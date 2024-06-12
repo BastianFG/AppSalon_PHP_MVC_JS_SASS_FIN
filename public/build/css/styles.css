@@ -1,0 +1,27 @@
+.error {
+    color: #f59292;
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: block;
+}
+
+.campo {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.campo input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.campo span.error {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+}
