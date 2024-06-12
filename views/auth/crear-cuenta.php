@@ -68,8 +68,8 @@
         </div>
 
         <div class="campo">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Tu Password"/>
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" placeholder="Tu Contraseña"/>
             <span class="error" id="error-password"></span>
         </div>
 
@@ -78,7 +78,7 @@
 
     <div class="acciones">
         <a href="/">¿Ya tienes una cuenta? Inicia Sesión</a>
-        <a href="/olvide">¿Olvidaste tu password?</a>
+        <a href="/olvide">¿Olvidaste tu Contraseña?</a>
     </div>
 
     <script src="build/js/validacion.js"></script>

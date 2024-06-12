@@ -31,4 +31,41 @@ class Servicio extends ActiveRecord {
 
         return self::$alertas;
     }
+    public static function obtenerTodosLosServiciosConSolicitudesDelMes($mes, $año) {
+        $query = "SELECT servicios.id, servicios.nombre, COUNT(citasservicios.servicioid) AS cantidad 
+                  FROM servicios
+                  LEFT JOIN citasservicios ON servicios.id = citasservicios.servicioid
+                  LEFT JOIN citas ON citasservicios.citaid = citas.id
+                  AND MONTH(citas.fecha) = ? AND YEAR(citas.fecha) = ?
+                  GROUP BY servicios.id
+                  ORDER BY cantidad DESC";
+
+        $stmt = self::$db->prepare($query);
+        $stmt->bind_param("ii", $mes, $año);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $servicios = [];
+        while ($row = $result->fetch_assoc()) {
+            $servicios[] = $row;
+        }
+        return $servicios;
+    }
+
+    public static function obtenerCitasPorDiaDeLaSemana($mes, $año) {
+        $query = "SELECT DAYOFWEEK(fecha) as dia_semana, COUNT(id) as cantidad
+                  FROM citas
+                  WHERE MONTH(fecha) = ? AND YEAR(fecha) = ?
+                  GROUP BY dia_semana
+                  ORDER BY cantidad DESC";
+
+        $stmt = self::$db->prepare($query);
+        $stmt->bind_param("ii", $mes, $año);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $diasSemana = [];
+        while ($row = $result->fetch_assoc()) {
+            $diasSemana[] = $row;
+        }
+        return $diasSemana;
+    }
 }

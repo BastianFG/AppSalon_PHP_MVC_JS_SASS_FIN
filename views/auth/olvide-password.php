@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Olvide Password</title>
+    <title>Olvide Contraseña</title>
     <style>
         .error {
             color: #f59292;
@@ -36,8 +36,8 @@
     </style>
 </head>
 <body>
-    <h1 class="nombre-pagina">Olvide Password</h1>
-    <p class="descripcion-pagina">Reestablece tu password escribiendo tu email a continuación</p>
+    <h1 class="nombre-pagina">Olvide Contraseña</h1>
+    <p class="descripcion-pagina">Reestablece tu Contraseña escribiendo tu email a continuación</p>
 
     <?php 
         include_once __DIR__ . "/../templates/alertas.php";

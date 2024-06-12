@@ -47,6 +47,7 @@ $router->post('/servicios/crear', [ServicioController::class, 'crear']);
 $router->get('/servicios/actualizar', [ServicioController::class, 'actualizar']);
 $router->post('/servicios/actualizar', [ServicioController::class, 'actualizar']);
 $router->post('/servicios/eliminar', [ServicioController::class, 'eliminar']);
+$router->get('/servicios/informe', [ServicioController::class, 'informe']);
 
 // Profesionales
 $router->get('/profesionales', [ProfesionalController::class, 'index']);

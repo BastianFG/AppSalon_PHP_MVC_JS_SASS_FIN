@@ -17,7 +17,7 @@
     </div>
     <div class="barra-servicios">
         <h3>Reportes</h3>
-        <a class="boton" href="/profesionales">Servicios</a>
-        <a class="boton" href="/profesionales/crear">Dias </a>
+        <a class="boton" href="/servicios/informe">Informe Mes</a>
+        <a class="boton" href="/servicios/informe">Informe Dias </a>
     </div>
 <?php } ?>

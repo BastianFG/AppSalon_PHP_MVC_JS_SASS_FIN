@@ -82,4 +82,45 @@ class ServicioController {
             header('Location: /servicios');
         }
     }
+    
+    public static function informe(Router $router) {
+        session_start();
+        isAdmin();
+    
+        // Obtener el mes y el año actual
+        $mes = date('m');
+        $año = date('Y');
+    
+        // Obtener todos los servicios con las solicitudes del mes
+        $servicios = Servicio::obtenerTodosLosServiciosConSolicitudesDelMes($mes, $año);
+    
+        // Obtener los días de la semana más frecuentes para las citas
+        $diasFrecuentes = Servicio::obtenerCitasPorDiaDeLaSemana($mes, $año);
+    
+        // Crear una estructura con todos los días de la semana
+        $diasSemana = [
+            1 => 'Lunes',
+            2 => 'Martes',
+            3 => 'Miércoles',
+            4 => 'Jueves',
+            5 => 'Viernes',
+            6 => 'Sábado',
+            7 => 'Domingo'
+        ];
+
+        // Inicializar el conteo de citas para cada día en 0
+        $diasConteo = array_fill_keys(array_keys($diasSemana), 0);
+
+        // Rellenar el conteo con los datos reales
+        foreach ($diasFrecuentes as $dia) {
+            $diasConteo[$dia['dia_semana']] = $dia['cantidad'];
+        }
+
+        $router->render('servicios/informe', [
+            'nombre' => $_SESSION['nombre'],
+            'servicios' => $servicios,
+            'diasConteo' => $diasConteo,
+            'diasSemana' => $diasSemana
+        ]);
+    }   
 }

@@ -7,6 +7,7 @@ use Model\Usuario;
 use MVC\Router;
 
 class LoginController {
+
     public static function login(Router $router) {
         $alertas = [];
 
@@ -15,13 +16,23 @@ class LoginController {
             $alertas = $auth->validarLogin();
 
             if(empty($alertas)) {
-                // Comprobar que exista el usuario
                 $usuario = Usuario::where('email', $auth->email);
 
                 if($usuario) {
-                    // Verificar el password
-                    if( $usuario->comprobarPasswordAndVerificado($auth->password) ) {
-                        // Autenticar el usuario
+                    if($usuario->intentos_login >= 3) {
+                        $ahora = time();
+                        $ultimo_intento = strtotime($usuario->ultimo_intento);
+                        $diferencia = ($ahora - $ultimo_intento) / 60;
+
+                        if($diferencia < 15) {
+                            Usuario::setAlerta('error', 'Has excedido el número máximo de intentos. Inténtalo de nuevo en 15 minutos.');
+                            $alertas = Usuario::getAlertas();
+                        } else {
+                            $usuario->resetearIntentos();
+                        }
+                    }
+
+                    if(empty($alertas) && $usuario->comprobarPasswordAndVerificado($auth->password)) {
                         session_start();
 
                         $_SESSION['id'] = $usuario->id;
@@ -29,27 +40,30 @@ class LoginController {
                         $_SESSION['email'] = $usuario->email;
                         $_SESSION['login'] = true;
 
-                        // Redireccionamiento
-                        if($usuario->admin === "1") {
+                        if($usuario->admin === '1') {
                             $_SESSION['admin'] = $usuario->admin ?? null;
                             header('Location: /admin');
                         } else {
                             header('Location: /cita');
                         }
+                    } else {
+                        $usuario->incrementarIntentos();
+                        Usuario::setAlerta('error', 'El email o password son incorrectos');
+                        $alertas = Usuario::getAlertas();
                     }
                 } else {
-                    Usuario::setAlerta('error', 'Usuario no encontrado');
+                    Usuario::setAlerta('error', 'El usuario no existe');
+                    $alertas = Usuario::getAlertas();
                 }
-
             }
         }
 
-        $alertas = Usuario::getAlertas();
-        
         $router->render('auth/login', [
             'alertas' => $alertas
         ]);
     }
+
+
 
     public static function logout() {
         session_start();
@@ -137,34 +151,38 @@ class LoginController {
 
     public static function crear(Router $router) {
         $usuario = new Usuario;
-
+    
         // Alertas vacias
         $alertas = [];
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
             $usuario->sincronizar($_POST);
             $alertas = $usuario->validarNuevaCuenta();
-
+    
+            // Verificar confirmación de contraseña
+            if($_POST['password'] !== $_POST['confirmar_password']) {
+                $alertas['error'][] = 'Los passwords no coinciden';
+            }
+    
             // Revisar que alerta este vacio
             if(empty($alertas)) {
                 // Verificar que el usuario no este registrado
                 $resultado = $usuario->existeUsuario();
-
+    
                 if($resultado->num_rows) {
                     $alertas = Usuario::getAlertas();
                 } else {
                     // Hashear el Password
                     $usuario->hashPassword();
-
+    
                     // Generar un Token único
                     $usuario->crearToken();
-
+    
                     // Enviar el Email
                     $email = new Email($usuario->nombre, $usuario->email, $usuario->token);
                     $email->enviarConfirmacion();
-
+    
                     // Crear el usuario
                     $resultado = $usuario->guardar();
-                    // debuguear($usuario);
                     if($resultado) {
                         header('Location: /mensaje');
                     }
@@ -177,33 +195,41 @@ class LoginController {
             'alertas' => $alertas
         ]);
     }
+    
+    
 
     public static function mensaje(Router $router) {
         $router->render('auth/mensaje');
     }
 
-    public static function confirmar(Router $router) {
+    public static function confirmar (Router $router) {
         $alertas = [];
+ 
+        //sanitizar y leer token desde la url
         $token = s($_GET['token']);
+ 
         $usuario = Usuario::where('token', $token);
-
-        if(empty($usuario)) {
-            // Mostrar mensaje de error
-            Usuario::setAlerta('error', 'Token No Válido');
-        } else {
-            // Modificar a usuario confirmado
-            $usuario->confirmado = "1";
-            $usuario->token = null;
+ 
+        if(empty($usuario) || $usuario->token === '') {
+ 
+            //mostrar mensaje de error
+            Usuario::setAlerta('error', 'Token no válido...');
+ 
+        }else {
+ 
+            //cambiar valor de columna confirmado
+            $usuario->confirmado = '1';
+            //eliminar token
+            $usuario->token = '';
+            //Guardar y Actualizar 
             $usuario->guardar();
-            Usuario::setAlerta('exito', 'Cuenta Comprobada Correctamente');
+            //mostrar mensaje de exito
+            Usuario::setAlerta('exito', 'Cuenta verificada exitosamente...');
         }
-       
-        // Obtener alertas
+ 
         $alertas = Usuario::getAlertas();
-
-        // Renderizar la vista
         $router->render('auth/confirmar-cuenta', [
-            'alertas' => $alertas
+            'alertas'=>$alertas
         ]);
     }
 }
